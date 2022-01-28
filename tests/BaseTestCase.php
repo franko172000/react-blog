@@ -4,17 +4,19 @@ namespace Tests;
 
 class BaseTestCase extends TestCase
 {
-    public function assetValidationError(array $data, int $errorCount)
+    protected function handleSingleFieldValidation($response, $message)
     {
+        $data = json_decode($response->content(), true);
         $this->assertArrayHasKey('message', $data);
         $this->assertArrayHasKey('statusCode', $data);
         $this->assertArrayHasKey('errorCode', $data);
         $this->assertArrayHasKey('errors', $data);
-
         $this->assertEquals("Your request could not be processed", $data['message']);
         $this->assertEquals(422, $data['statusCode']);
         $this->assertEquals('VALIDATION_ERROR', $data['errorCode']);
-
-        $this->assertCount($errorCount, $data['errors']);
+        $this->assertCount(1, $data['errors']);
+        $errors = $data['errors'];
+        $this->assertEquals($message, $errors[0]);
+        $response->assertStatus(422);
     }
 }

@@ -18,27 +18,28 @@ class AuthControllerTest extends BaseTestCase
     /**
      * Test login when no input is provided
      */
-    public function testLoginValidation()
+    public function testLoginValidationNoEmail()
     {
-        $response = $this->post('api/auth/login', []);
-        $data = json_decode($response->content(), true);
-        $this->assetValidationError($data, 2);
-        $errors = $data['errors'];
-        $this->assertEquals('Email not set', $errors[0]);
-        $this->assertEquals('Password not set', $errors[1]);
-        $response->assertStatus(422);
+        $response = $this->post('api/auth/login', [
+            'password' => 'Test'
+        ]);
+        $this->handleSingleFieldValidation($response, 'Email not set');
+    }
+
+    public function testLoginValidationNoPassword()
+    {
+        $response = $this->post('api/auth/login', [
+            'email' => 'Test@example.com'
+        ]);
+        $this->handleSingleFieldValidation($response, 'Password not set');
     }
 
     public function testLoginSuccessful()
     {
         $password = "Test";
-        $user = User::create([
-            'first_name' => "John",
-            'last_name' => "Doe",
-            'email' => "john@example.com",
-            'email_verified_at' => now(),
-            'password' => bcrypt($password),
-            'remember_token' => Str::random(10)
+
+        $user = User::factory()->create([
+            'password' => bcrypt($password)
         ]);
 
         $response = $this->post('api/auth/login', [
@@ -65,13 +66,13 @@ class AuthControllerTest extends BaseTestCase
 
     public function testUserCantLoginWithWrongCredentials()
     {
-        $user = User::factory()->make([
+        $user = User::factory()->create([
             'password' => bcrypt('Test')
         ]);
 
         $response = $this->post('api/auth/login', [
             'email' => $user->email,
-            'password' => 'Testing',
+            'password' => 'TestingMe',
         ]);
 
         $data = json_decode($response->content(), true);
@@ -98,5 +99,94 @@ class AuthControllerTest extends BaseTestCase
         $this->assertEquals('User created', $data['message']);
         $this->assertEquals(201, $data['statusCode']);
         $response->assertStatus(201);
+    }
+
+    public function testRegistrationValidateNoFirstName()
+    {
+        $response = $this->post('api/auth/register', [
+            "lastName" => "Doe",
+            "email" => "doe@john.com",
+            "password" => "john"
+        ]);
+
+        $this->handleSingleFieldValidation($response, 'First name is required');
+    }
+
+    public function testRegistrationValidateFirstNameMinCharacters()
+    {
+        $response = $this->post('api/auth/register', [
+            "firstName" => "D",
+            "lastName" => "Doe",
+            "email" => "doe@john.com",
+            "password" => "john"
+        ]);
+        $this->handleSingleFieldValidation($response, 'First must be a minimum of 2 characters');
+    }
+    public function testRegistrationValidateNoLastName()
+    {
+        $response = $this->post('api/auth/register', [
+            "firstName" => "John",
+            "email" => "doe@john.com",
+            "password" => "john"
+        ]);
+        $this->handleSingleFieldValidation($response, 'Last name is required');
+    }
+
+    public function testRegistrationValidateLastNameMinCharacters()
+    {
+        $response = $this->post('api/auth/register', [
+            "firstName" => "John",
+            "lastName" => "D",
+            "email" => "doe@john.com",
+            "password" => "john"
+        ]);
+        $this->handleSingleFieldValidation($response, 'Last must be a minimum of 2 characters');
+    }
+
+    public function testRegistrationValidateNoEmailField()
+    {
+        $response = $this->post('api/auth/register', [
+            "firstName" => "John",
+            "lastName" => "Doe",
+            "password" => "john"
+        ]);
+        $this->handleSingleFieldValidation($response, 'Email field is required');
+    }
+
+    public function testRegistrationValidateWrongEmailFormat()
+    {
+
+        $response = $this->post('api/auth/register', [
+            "firstName" => "John",
+            "lastName" => "Doe",
+            "password" => "john",
+            "email" => "doe@",
+        ]);
+        $this->handleSingleFieldValidation($response, 'A valid email address is required');
+    }
+
+    public function testRegistrationValidateEmailExists()
+    {
+        $user = User::factory()->create([
+            'email' => "john@example.com",
+        ]);
+
+        $response = $this->post('api/auth/register', [
+            "firstName" => "John",
+            "lastName" => "Doe",
+            "password" => "john",
+            "email" => $user->email,
+        ]);
+        $this->handleSingleFieldValidation($response, 'The email has already been taken.');
+    }
+
+    public function testRegistrationValidateNoPasswordField()
+    {
+        $response = $this->post('api/auth/register', [
+            "firstName" => "John",
+            "lastName" => "Doe",
+            "email" => "john@example.com",
+        ]);
+        $this->handleSingleFieldValidation($response, 'Password is required');
     }
 }

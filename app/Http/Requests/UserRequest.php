@@ -9,16 +9,16 @@ class UserRequest extends FormRequest
 {
     use FormRequestTrait;
 
-    //protected $stopOnFirstFailure = true;
+    protected $stopOnFirstFailure = true;
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-//    public function authorize(): bool
-//    {
-//        return true;
-//    }
+    public function authorize(): bool
+    {
+        return true;
+    }
 
      /**
      * Get the validation rules that apply to the request.
@@ -43,10 +43,13 @@ class UserRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'first_name.required' => 'First name is required',
-            'first_name.min' => 'First must be a minimum of 2 characters',
-            'last_name.required' => 'Last name is required',
-            'email.required' => 'A valid email address is required'
+            'firstName.required' => 'First name is required',
+            'firstName.min' => 'First must be a minimum of 2 characters',
+            'lastName.required' => 'Last name is required',
+            'lastName.min' => 'Last must be a minimum of 2 characters',
+            'email.required' => 'Email field is required',
+            'email.email' => 'A valid email address is required',
+            'password.required' => 'Password is required'
         ];
     }
 }

@@ -10,6 +10,8 @@ class AuthRequest extends FormRequest
 {
     use FormRequestTrait;
 
+    protected $stopOnFirstFailure = true;
+
     /**
      * Determine if the user is authorized to make this request.
      *
