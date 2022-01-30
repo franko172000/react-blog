@@ -13,10 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Route::middleware('auth:sanctum')->prefix('user/')->group(function () {
     Route::post('add-post', [\App\Http\Controllers\PostController::class, 'addPost']);
     Route::get('posts', [\App\Http\Controllers\PostController::class, 'getUserPosts']);
@@ -28,3 +24,7 @@ Route::prefix('auth/')->group(function () {
 });
 
 Route::get('/posts', [\App\Http\Controllers\PostController::class, 'getPosts']);
+
+//default web route for SPA
+Route::get('/{any?}', [\App\Http\Controllers\HomeController::class, 'index'])
+    ->where('any', '.*');
