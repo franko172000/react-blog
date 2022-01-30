@@ -19,4 +19,20 @@ class BaseTestCase extends TestCase
         $this->assertEquals($message, $errors[0]);
         $response->assertStatus(422);
     }
+
+    protected function handleUnAuthenticatedAssertions($response)
+    {
+        $data = json_decode($response->content(), true);
+
+        $response->assertJsonStructure([
+            'message',
+            'statusCode',
+            'errorCode'
+        ]);
+
+        $this->assertEquals('Unauthenticated.', $data['message']);
+        $this->assertEquals(401, $data['statusCode']);
+        $this->assertEquals("UNAUTHORIZED_ERROR", $data['errorCode']);
+        $response->assertStatus(401);
+    }
 }

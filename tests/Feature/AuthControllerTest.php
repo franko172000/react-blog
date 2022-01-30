@@ -7,7 +7,6 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Str;
 use Tests\BaseTestCase;
 
 class AuthControllerTest extends BaseTestCase
@@ -20,7 +19,7 @@ class AuthControllerTest extends BaseTestCase
      */
     public function testLoginValidationNoEmail()
     {
-        $response = $this->post('api/auth/login', [
+        $response = $this->post('auth/login', [
             'password' => 'Test'
         ]);
         $this->handleSingleFieldValidation($response, 'Email not set');
@@ -28,7 +27,7 @@ class AuthControllerTest extends BaseTestCase
 
     public function testLoginValidationNoPassword()
     {
-        $response = $this->post('api/auth/login', [
+        $response = $this->post('auth/login', [
             'email' => 'Test@example.com'
         ]);
         $this->handleSingleFieldValidation($response, 'Password not set');
@@ -42,9 +41,11 @@ class AuthControllerTest extends BaseTestCase
             'password' => bcrypt($password)
         ]);
 
-        $response = $this->post('api/auth/login', [
+        $response = $this->post('auth/login', [
             'email' => $user->email,
             'password' => $password,
+        ], [
+            'Accept' => 'application/json'
         ]);
 
         $data = json_decode($response->content(), true);
@@ -70,7 +71,7 @@ class AuthControllerTest extends BaseTestCase
             'password' => bcrypt('Test')
         ]);
 
-        $response = $this->post('api/auth/login', [
+        $response = $this->post('auth/login', [
             'email' => $user->email,
             'password' => 'TestingMe',
         ]);
@@ -87,7 +88,7 @@ class AuthControllerTest extends BaseTestCase
 
     public function testUserCanCreateAccount()
     {
-        $response = $this->post('api/auth/register', [
+        $response = $this->post('auth/register', [
             'firstName' => "John",
             "lastName" => "Doe",
             "email" => "doe@john.com",
@@ -103,7 +104,7 @@ class AuthControllerTest extends BaseTestCase
 
     public function testRegistrationValidateNoFirstName()
     {
-        $response = $this->post('api/auth/register', [
+        $response = $this->post('auth/register', [
             "lastName" => "Doe",
             "email" => "doe@john.com",
             "password" => "john"
@@ -114,7 +115,7 @@ class AuthControllerTest extends BaseTestCase
 
     public function testRegistrationValidateFirstNameMinCharacters()
     {
-        $response = $this->post('api/auth/register', [
+        $response = $this->post('auth/register', [
             "firstName" => "D",
             "lastName" => "Doe",
             "email" => "doe@john.com",
@@ -124,7 +125,7 @@ class AuthControllerTest extends BaseTestCase
     }
     public function testRegistrationValidateNoLastName()
     {
-        $response = $this->post('api/auth/register', [
+        $response = $this->post('auth/register', [
             "firstName" => "John",
             "email" => "doe@john.com",
             "password" => "john"
@@ -134,7 +135,7 @@ class AuthControllerTest extends BaseTestCase
 
     public function testRegistrationValidateLastNameMinCharacters()
     {
-        $response = $this->post('api/auth/register', [
+        $response = $this->post('auth/register', [
             "firstName" => "John",
             "lastName" => "D",
             "email" => "doe@john.com",
@@ -145,7 +146,7 @@ class AuthControllerTest extends BaseTestCase
 
     public function testRegistrationValidateNoEmailField()
     {
-        $response = $this->post('api/auth/register', [
+        $response = $this->post('auth/register', [
             "firstName" => "John",
             "lastName" => "Doe",
             "password" => "john"
@@ -156,7 +157,7 @@ class AuthControllerTest extends BaseTestCase
     public function testRegistrationValidateWrongEmailFormat()
     {
 
-        $response = $this->post('api/auth/register', [
+        $response = $this->post('auth/register', [
             "firstName" => "John",
             "lastName" => "Doe",
             "password" => "john",
@@ -171,7 +172,7 @@ class AuthControllerTest extends BaseTestCase
             'email' => "john@example.com",
         ]);
 
-        $response = $this->post('api/auth/register', [
+        $response = $this->post('auth/register', [
             "firstName" => "John",
             "lastName" => "Doe",
             "password" => "john",
@@ -182,7 +183,7 @@ class AuthControllerTest extends BaseTestCase
 
     public function testRegistrationValidateNoPasswordField()
     {
-        $response = $this->post('api/auth/register', [
+        $response = $this->post('auth/register', [
             "firstName" => "John",
             "lastName" => "Doe",
             "email" => "john@example.com",

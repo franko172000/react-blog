@@ -2,11 +2,16 @@
 
 namespace App\Exceptions;
 
+use App\Traits\ResponseTrait;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
 {
+    use ResponseTrait;
+
     /**
      * A list of the exception types that are not reported.
      *
@@ -34,8 +39,21 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->reportable(function (Throwable $e) {
-            //
+        $this->renderable(function (Throwable $exception, $request) {
+            $environment = env('APP_ENV');
+
+            if ($environment === 'local' || $environment === 'development') {
+                $trace = explode("\n", $exception->getTraceAsString());
+                $this->setStackTrace($trace);
+            }
+
+            if ($exception instanceof HttpException) {
+                return $this->responseGeneral($exception->getStatusCode(), $exception->getMessage());
+            } elseif ($exception instanceof AuthenticationException) {
+                return $this->responseUnauthorized($exception->getMessage());
+            } else {
+                return $this->responseServerError($exception->getMessage());
+            }
         });
     }
 }
