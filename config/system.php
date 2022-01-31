@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'external_post_endpoint' => 'https://sq1-api-test.herokuapp.com/posts',
     'error_codes' => [
         'CONFLICT' => 'CONFLICT_ERROR',
         'CREDENTIALS' => 'CREDENTIALS_ERROR',

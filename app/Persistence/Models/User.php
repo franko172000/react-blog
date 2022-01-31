@@ -50,6 +50,10 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function scopeAdminUser($query){
+        return $query->whereUserType('admin');
+    }
+
     /**
      * Create a new factory instance for the model.
      * @return UserFactory
@@ -58,6 +62,7 @@ class User extends Authenticatable
     {
         return UserFactory::new();
     }
+
 
     public function posts(): HasMany
     {
