@@ -9,6 +9,7 @@ use App\Http\Resources\UserResource;
 use App\Business\Services\AuthService;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Spatie\DataTransferObject\Exceptions\UnknownProperties;
 
@@ -81,5 +82,22 @@ class AuthController extends Controller
             'lastName' => $data['lastName']
             ]));
         return $this->responseCreated("User created");
+    }
+
+
+    /**
+     * Logout user
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return $this->responseOk("User logged out");
     }
 }

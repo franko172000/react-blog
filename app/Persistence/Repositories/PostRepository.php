@@ -32,6 +32,7 @@ class PostRepository
         $postData = [
             'title' => $data->title,
             'description' => $data->description,
+            'category_id' => $data->category,
             'publication_date' => $data->publishedDate
         ];
 
@@ -71,6 +72,6 @@ class PostRepository
             $postObj = $postObj->oldestPosts();
         }
 
-        return $postObj->paginate($data->limit);
+        return $postObj->paginate($data->limit, ['*'], 'page', $data->page);
     }
 }

@@ -16,21 +16,31 @@ class Post extends Model
         'title',
         'description',
         'publication_date',
+        'category_id'
+    ];
+
+    protected $dates = [
+        'publication_date'
     ];
 
     public function scopeNewestPosts($query)
     {
-        return $query->orderBy('published_date', 'desc');
+        return $query->orderBy('publication_date', 'desc');
     }
 
     public function scopeOldestPosts($query)
     {
-        return $query->orderBy('published_date', 'asc');
+        return $query->orderBy('publication_date', 'asc');
     }
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
     }
 
     public function comments(): HasMany

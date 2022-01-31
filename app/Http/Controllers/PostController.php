@@ -8,10 +8,12 @@ use App\Business\DTO\PostDTO;
 use App\Business\Services\PostService;
 use App\Http\Requests\CommentRequest;
 use App\Http\Requests\PostRequest;
+use App\Http\Resources\CategoryResource;
 use App\Http\Resources\CommentResource;
 use App\Http\Resources\PostResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Auth;
 use Spatie\DataTransferObject\Exceptions\UnknownProperties;
 
 class PostController extends Controller
@@ -35,6 +37,7 @@ class PostController extends Controller
             'title' => $data['title'],
             'description' => $data['description'],
             'user' => $user,
+            'category' => $data['category'],
             'publishedDate' => now()
         ]));
 
@@ -67,19 +70,8 @@ class PostController extends Controller
     public function getUserPosts(Request $request): AnonymousResourceCollection
     {
         $data = $request->all();
-        $params = [
-            'user' => auth()->user()
-        ];
 
-        if (isset($data['limit'])) {
-            $params['limit'] = $data['limit'];
-        }
-
-        if (isset($data['sortOrder'])) {
-            $params['sortOrder'] = $data['sortOrder'];
-        }
-
-        $posts =  $this->postService->getPosts(new GetPostsDTO($params));
+        $posts = $this->postSetup($data, true);
 
         return PostResource::collection($posts);
     }
@@ -93,7 +85,34 @@ class PostController extends Controller
     public function getPosts(Request $request): AnonymousResourceCollection
     {
         $data = $request->all();
+
+        $posts = $this->postSetup($data);
+        return PostResource::collection($posts);
+    }
+
+    /**
+     * @return AnonymousResourceCollection
+     */
+    public function categories(): AnonymousResourceCollection
+    {
+        $categories = $this->postService->getCategories();
+        return CategoryResource::collection($categories);
+    }
+
+    /**
+     * @param array $data
+     * @param bool $userPosts
+     * @return mixed
+     * @throws UnknownProperties
+     */
+    private function postSetup(array $data, bool $userPosts = false)
+    {
         $params = [];
+        if ($userPosts) {
+            $params = [
+                'user' => auth()->user()
+            ];
+        }
         if (isset($data['limit'])) {
             $params['limit'] = $data['limit'];
         }
@@ -102,8 +121,10 @@ class PostController extends Controller
             $params['sortOrder'] = $data['sortOrder'];
         }
 
-        $posts =  $this->postService->getPosts(new GetPostsDTO($params));
+        if (isset($data['page'])) {
+            $params['page'] = $data['page'];
+        }
 
-        return PostResource::collection($posts);
+        return $this->postService->getPosts(new GetPostsDTO($params));
     }
 }

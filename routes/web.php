@@ -21,9 +21,11 @@ Route::middleware('auth:sanctum')->prefix('user/')->group(function () {
 Route::prefix('auth/')->group(function () {
     Route::post('login', [\App\Http\Controllers\AuthController::class, 'login']);
     Route::post('register', [\App\Http\Controllers\AuthController::class, 'register']);
+    Route::post('logout', [\App\Http\Controllers\AuthController::class, 'logout']);
 });
 
 Route::get('/posts', [\App\Http\Controllers\PostController::class, 'getPosts']);
+Route::get('/categories', [\App\Http\Controllers\PostController::class, 'categories']);
 
 //default web route for SPA
 Route::get('/{any?}', [\App\Http\Controllers\HomeController::class, 'index'])

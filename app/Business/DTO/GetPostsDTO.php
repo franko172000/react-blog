@@ -9,5 +9,6 @@ class GetPostsDTO extends DataTransferObject
 {
     public string $sortOrder = "new";
     public int $limit = 20;
+    public int $page = 1;
     public ?User $user;
 }

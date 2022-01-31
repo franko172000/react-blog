@@ -1,33 +1,38 @@
-import Page from "../components/Page";
+import Page from "../../components/Page";
+import Blog from "../../components/Blog";
 import {useEffect, useState} from "react";
-import Loader from "../components/Loader";
-import Blog from "../components/Blog";
-import {getAllPosts} from "../services/requests";
+import {getUserPosts} from "../../services/requests";
+import Loader from "../../components/Loader";
 
-const BlogPosts = ()=> {
+const MyBlogPosts = ()=> {
     const [posts, setPosts] = useState();
     const [showLoader, setShowLoader] = useState();
     useEffect(async ()=>{
-        await loadPosts();
+        await getPosts();
     },[]);
 
     const handlePagination = async (page)=>{
-        await loadPosts({
+        await getPosts({
             page
         });
     }
 
-    const loadPosts = async (params) => {
+    const getPosts = async (params) =>{
         setShowLoader(true);
-        const res = await getAllPosts(params);
+        const res = await getUserPosts(params);
         setPosts(res.data);
         setShowLoader(false)
     }
     return (
         <>
             <Loader show={showLoader} />
+            <div className="container">
+                <div className="col-md-12">
+                    <p>Hello Emmanuel</p>
+                </div>
+            </div>
             <Page
-                title="Latest Posts">
+                title="My Blog Posts">
                 <div className="masonry-filter-container d-flex align-items-center">
                     <span>Category:</span>
                     <div className="masonry-filter-holder">
@@ -41,4 +46,4 @@ const BlogPosts = ()=> {
     )
 }
 
-export default BlogPosts;
+export default MyBlogPosts;

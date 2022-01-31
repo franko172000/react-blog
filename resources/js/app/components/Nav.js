@@ -1,4 +1,26 @@
+import {Link} from "react-router-dom";
+import {logout} from "../services/requests";
+import store from 'store'
+import {AUTH_STORAGE_KEY} from "../constants";
+import {useEffect, useState} from "react";
+
 const Nav = ()=> {
+    const [auth, setAuth] = useState()
+
+    useEffect(()=>{
+        setAuth(store.get(AUTH_STORAGE_KEY));
+    }, []);
+
+    const handleLogout = async (e)=>{
+        e.preventDefault();
+        const res = await logout();
+        if(res.status === 200){
+            auth.isLoggedIn = false;
+            auth.user = null;
+            store.set(AUTH_STORAGE_KEY, auth);
+            window.location = '/'
+        }
+    }
     return(
         <div className="nav-container ">
             <nav id="menu1" className="bar bar--sm bar-1 hidden-xs ">
@@ -16,32 +38,44 @@ const Nav = ()=> {
                             <div className="bar__module">
                                 <ul className="menu-horizontal text-left">
                                     <li className="dropdown">
-                                        <span className="dropdown__trigger">Home</span>
+                                        <Link to="/">Home </Link>
                                     </li>
-                                    <li className="dropdown">
-                                        <span className="dropdown__trigger">My Blog Posts</span>
-                                    </li>
-                                    <li className="dropdown">
-                                        <span className="dropdown__trigger">Add New Post</span>
-                                    </li>
-                                    <li className="dropdown">
-                                        <span className="dropdown__trigger">Logout</span>
-                                    </li>
+                                    {
+                                        auth?.isLoggedIn && (
+                                            <>
+                                                <li className="dropdown">
+                                                    <Link to="/user/my-posts">My Blog Posts </Link>
+                                                </li>
+                                                <li className="dropdown">
+                                                    <Link to="/user/new-post">Add New Post </Link>
+                                                </li>
+                                                <li className="dropdown">
+                                                    <a href="#" onClick={(e)=>handleLogout(e)}>Logout </a>
+                                                </li>
+                                            </>
+                                        )
+                                    }
                                 </ul>
                             </div>
 
                             <div className="bar__module">
-                                <a className="btn btn--sm type--uppercase" href="variant/builder.html">
-                                    <span className="btn__text">
-                                        Login
-                                    </span>
-                                </a>
-                                <a className="btn btn--sm btn--primary type--uppercase"
-                                   href="https://themeforest.net/item/stack-multipurpose-html-with-page-builder/19337626?ref=medium_rare">
-                                    <span className="btn__text">
-                                        Sign up
-                                    </span>
-                                </a>
+                                {
+                                    !auth?.isLoggedIn && (
+                                        <>
+                                            <Link className="btn btn--sm type--uppercase" to="/auth/login">
+                                                <span className="btn__text">
+                                                    Login
+                                                </span>
+                                            </Link>
+                                            <Link className="btn btn--sm btn--primary type--uppercase" to="/auth/register">
+                                                <span className="btn__text">
+                                                    Sign up
+                                                </span>
+                                            </Link>
+                                        </>
+                                    )
+                                }
+
                             </div>
 
                         </div>

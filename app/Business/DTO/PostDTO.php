@@ -9,6 +9,7 @@ class PostDTO extends DataTransferObject
 {
     public string $title;
     public string $description;
+    public int $category;
     public ?string $publishedDate;
     public User $user;
 }
