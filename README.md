@@ -30,6 +30,8 @@ If you followed the steps above, you can login to any account with **test** as p
     default password is test
 ```
 
+## Required PHP version
+^7.4 | ^8.0
 ## Testing
 Run the command below at the root directory of the project
 ```bash
