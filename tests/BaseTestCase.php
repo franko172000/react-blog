@@ -35,4 +35,18 @@ class BaseTestCase extends TestCase
         $this->assertEquals("UNAUTHORIZED_ERROR", $data['errorCode']);
         $response->assertStatus(401);
     }
+    protected function handle404Assertions($response)
+    {
+        $data = json_decode($response->content(), true);
+        $response->assertJsonStructure([
+            'message',
+            'statusCode',
+            'errorCode'
+        ]);
+
+        $this->assertEquals('Resource not found', $data['message']);
+        $this->assertEquals(404, $data['statusCode']);
+        $this->assertEquals("NOT_FOUND_ERROR", $data['errorCode']);
+        $response->assertStatus(404);
+    }
 }

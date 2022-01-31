@@ -61,6 +61,11 @@ class PostService
         return $this->repository->getPosts($data);
     }
 
+    public function getSinglePost(int $id)
+    {
+        return $this->repository->getPostById($id);
+    }
+
     /**
      * @return Category[]|Collection
      */

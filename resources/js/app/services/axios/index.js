@@ -1,6 +1,6 @@
 import axios from 'axios'
 const getUrl = window.location;
-const baseURL = getUrl .protocol + "//" + getUrl.host + "/" ;
+const baseURL = getUrl .protocol + "//" + getUrl.host + "/spa/" ;
 
 const ApiClient = axios.create({
   baseURL

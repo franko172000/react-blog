@@ -40,10 +40,10 @@ trait ResponseTrait
      * @param string|null $errorCode
      * @return JsonResponse
      */
-    public function responseNotFound(string $message, $errors = [], ?string $errorCode = null): JsonResponse
+    public function responseNotFound(string $message = "Resource not found", $errors = [], ?string $errorCode = null): JsonResponse
     {
         $errorCode = $errorCode ?? $this->getErrorCode('NOT_FOUND');
-        return $this->formatResponse(404, $message, $errors, $errorCode);
+        return $this->formatResponse(404, $message,[], $errors, $errorCode);
     }
 
     /**

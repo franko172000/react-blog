@@ -27,6 +27,10 @@ export const getAllPosts = async (params)=> {
     });
 }
 
+export const getPost = async (id)=> {
+    return ApiClient.get( '/post/'+id);
+}
+
 export const getCategories = async ()=> {
     return ApiClient.get( '/categories');
 }

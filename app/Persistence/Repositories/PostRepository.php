@@ -7,6 +7,8 @@ use App\Business\DTO\GetPostsDTO;
 use App\Business\DTO\PostDTO;
 use App\Persistence\Models\Comment;
 use App\Persistence\Models\Post;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 class PostRepository
@@ -75,5 +77,19 @@ class PostRepository
         return $postObj
             ->with('category')
             ->paginate($data->limit, ['*'], 'page', $data->page);
+    }
+
+
+    /**
+     * Get post by ID
+     * @param int $id
+     * @return Builder|Model
+     */
+    public function getPostById(int $id)
+    {
+        return $this->model
+            ->with('category')
+            ->whereId($id)
+            ->firstOrFail();
     }
 }

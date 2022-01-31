@@ -17,8 +17,22 @@ class PostFactory extends Factory
     {
         return [
             'title' => $this->faker->sentence,
-            'description' => $this->faker->paragraph,
+            'description' => $this->makeDescription(),
             'publication_date' => now()
         ];
     }
+
+    /**
+     * Generate description text
+     * @return string
+     */
+    private function makeDescription(): string
+    {
+        $text = "";
+        foreach ($this->faker->paragraphs(rand(5, 8)) as $paragraph){
+            $text .= "<p> $paragraph </p>";
+        }
+        return $text;
+    }
+
 }

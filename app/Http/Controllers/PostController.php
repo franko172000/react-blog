@@ -91,6 +91,17 @@ class PostController extends Controller
     }
 
     /**
+     * Get single post
+     * @param int $id
+     * @return PostResource
+     */
+    public function getPost(int $id): PostResource
+    {
+        $posts = $this->postService->getSinglePost($id);
+        return new PostResource($posts);
+    }
+
+    /**
      * @return AnonymousResourceCollection
      */
     public function categories(): AnonymousResourceCollection

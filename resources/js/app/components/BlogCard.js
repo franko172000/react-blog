@@ -1,3 +1,5 @@
+import {Link} from "react-router-dom";
+
 const BlogCard = ({post})=> {
     return(
         <div className="masonry__item col-lg-4 col-md-6">
@@ -6,9 +8,13 @@ const BlogCard = ({post})=> {
                     <span>{post.publicationDate}</span>
                     <h5>{post.title}</h5>
                     <p>Category: {post.category}</p>
-                    <a href="#">
+                    <Link to="/post/detail" state={
+                        {
+                            postId: post.id
+                        }
+                    }>
                         Read More
-                    </a>
+                    </Link>
                 </div>
             </article>
         </div>

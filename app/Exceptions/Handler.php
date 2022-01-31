@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use App\Traits\ResponseTrait;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Throwable;
@@ -47,10 +48,15 @@ class Handler extends ExceptionHandler
                 $this->setStackTrace($trace);
             }
 
-            if ($exception instanceof HttpException) {
-                return $this->responseGeneral($exception->getStatusCode(), $exception->getMessage());
+            if ($exception instanceof ModelNotFoundException) {
+                return $this->responseNotFound($exception->getMessage());
             } elseif ($exception instanceof AuthenticationException) {
                 return $this->responseUnauthorized($exception->getMessage());
+            } elseif ($exception instanceof HttpException) {
+                if($exception->getStatusCode() ===  404){
+                    return $this->responseNotFound();
+                }
+                return $this->responseGeneral($exception->getStatusCode(), $exception->getMessage());
             } else {
                 return $this->responseServerError($exception->getMessage());
             }
