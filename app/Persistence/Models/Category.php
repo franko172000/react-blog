@@ -27,4 +27,8 @@ class Category extends Model
     {
         return CategoryFactory::new();
     }
+
+    public static function randomCategory(){
+        return self::inRandomOrder()->first();
+    }
 }

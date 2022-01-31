@@ -48,6 +48,8 @@ class PostRequest extends FormRequest
             'description.required' => 'Description is required',
             'description.min' => 'Description must have at least 2 characters',
             'description.string' => 'Description must be a string',
+            'category.required' => 'Category is required',
+            'category.integer' => 'Category must be a number',
         ];
     }
 }

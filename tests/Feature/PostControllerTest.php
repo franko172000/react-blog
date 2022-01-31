@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Persistence\Models\Category;
 use App\Persistence\Models\Post;
 use App\Persistence\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -18,10 +19,11 @@ class PostControllerTest extends BaseTestCase
     public function testUserCanAddPost()
     {
         $user = $this->makeUser();
-
+        $this->makeCategory();
         $postData = [
             'title' => 'This is a test post',
             'description' => 'This is a test description',
+            'category' => 1
         ];
 
         $response = $this->actingAs($user)
@@ -63,32 +65,18 @@ class PostControllerTest extends BaseTestCase
         $this->handleUnAuthenticatedAssertions($response);
     }
 
-    public function testAddPostValidationNoTitle()
-    {
-        $user = $this->makeUser();
-
-        $postData = [
-            'description' => 'This is a test description',
-        ];
-
-        $response = $this->actingAs($this->makeUser())
-            ->withSession(['USER_SESSION' => time()])
-            ->post('/user/add-post', $postData, [
-                'Accept' => 'application/json'
-            ]);
-
-        $this->handleSingleFieldValidation($response, 'Title is required');
-    }
-
     public function testUserCanGetPosts()
     {
         $totalPost = 50;
         $defaultLimit = 20;
         $user = $this->makeUser();
+        $this->makeCategory();
         $user->posts()
             ->saveMany(Post::factory()
             ->count($totalPost)
-            ->make());
+            ->make([
+                'category_id' => Category::randomCategory()->id
+            ]));
 
         $response = $this->actingAs($user)
             ->withSession(['USER_SESSION' => time()])
@@ -104,19 +92,19 @@ class PostControllerTest extends BaseTestCase
 
         $response->assertStatus(200);
     }
+
     public function testUserCanGetPostsWithCustomLimit()
     {
         $totalPost = 50;
         $limit = 30;
         $user = $this->makeUser();
+        $this->makeCategory();
         $user->posts()
             ->saveMany(Post::factory()
             ->count($totalPost)
-            ->make());
-
-        $response = $this->get('/user/posts?limit=' . $limit, [
-                'Accept' => 'application/json'
-            ]);
+            ->make([
+                'category_id' => Category::randomCategory()->id
+            ]));
 
         $response = $this->actingAs($user)
             ->withSession(['USER_SESSION' => time()])
@@ -133,10 +121,39 @@ class PostControllerTest extends BaseTestCase
         $response->assertStatus(200);
     }
 
+    public function testPostsPagination()
+    {
+        $totalPost = 50;
+        $limit = 30;
+        $user = $this->makeUser();
+        $this->makeCategory();
+        $user->posts()
+            ->saveMany(Post::factory()
+                ->count($totalPost)
+                ->make([
+                    'category_id' => Category::randomCategory()->id
+                ]));
+
+        $response = $this->actingAs($user)
+            ->withSession(['USER_SESSION' => time()])
+            ->get('/user/posts?limit=' . $limit . '&page=2', [
+                'Accept' => 'application/json'
+            ]);
+
+        $data = json_decode($response->content(), true);
+        $this->assertCount(20, $data['data']);
+        $this->assertArrayHasKey('meta', $data);
+        $this->assertArrayHasKey('total', $data['meta']);
+        $this->assertEquals(2, $data['meta']['current_page']);
+
+        $response->assertStatus(200);
+    }
+
     public function testGuestsCanGetPosts()
     {
         $totalPost = 10;
         $defaultLimit = 20;
+        $this->makeCategory();
         User::factory()
             ->count(10)
             ->create()
@@ -144,7 +161,9 @@ class PostControllerTest extends BaseTestCase
                 $usr->posts()
                     ->saveMany(Post::factory()
                         ->count($totalPost)
-                        ->make());
+                        ->make([
+                            'category_id' => Category::randomCategory()->id
+                        ]));
             });
 
 
@@ -159,6 +178,23 @@ class PostControllerTest extends BaseTestCase
         $this->assertEquals(100, $data['meta']['total']);
 
         $response->assertStatus(200);
+    }
+
+    public function testAddPostValidationNoTitle()
+    {
+        $user = $this->makeUser();
+
+        $postData = [
+            'description' => 'This is a test description',
+        ];
+
+        $response = $this->actingAs($this->makeUser())
+            ->withSession(['USER_SESSION' => time()])
+            ->post('/user/add-post', $postData, [
+                'Accept' => 'application/json'
+            ]);
+
+        $this->handleSingleFieldValidation($response, 'Title is required');
     }
 
     public function testAddPostValidationMinTitleCharacters()
@@ -250,8 +286,49 @@ class PostControllerTest extends BaseTestCase
         $this->handleSingleFieldValidation($response, 'Description must be a string');
     }
 
+    public function testAddPostValidationNoCategory()
+    {
+        $user = $this->makeUser();
+
+        $postData = [
+            'title' => 'This is a test title',
+            'description' => 'This is a test description',
+        ];
+
+        $response = $this->actingAs($this->makeUser())
+            ->withSession(['USER_SESSION' => time()])
+            ->post('/user/add-post', $postData, [
+                'Accept' => 'application/json'
+            ]);
+
+        $this->handleSingleFieldValidation($response, 'Category is required');
+    }
+
+    public function testAddPostValidationCategoryMustBeInteger()
+    {
+        $user = $this->makeUser();
+
+        $postData = [
+            'title' => 'This is a test title',
+            'description' => 'This is a test description',
+            'category' => 'test',
+        ];
+
+        $response = $this->actingAs($this->makeUser())
+            ->withSession(['USER_SESSION' => time()])
+            ->post('/user/add-post', $postData, [
+                'Accept' => 'application/json'
+            ]);
+
+        $this->handleSingleFieldValidation($response, 'Category must be a number');
+    }
+
     private function makeUser()
     {
         return User::factory()->create();
+    }
+
+    private function makeCategory(){
+        return Category::factory()->count(10)->create();
     }
 }
