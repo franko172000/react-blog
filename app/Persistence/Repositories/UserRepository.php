@@ -31,6 +31,7 @@ class UserRepository
             'first_name' => $data->firstName,
             'last_name' => $data->lastName,
             'user_type' => 'user',
+            'email_verified_at' => now()
         ];
         return $this->model->create($userData);
     }

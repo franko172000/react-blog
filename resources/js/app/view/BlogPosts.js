@@ -28,13 +28,6 @@ const BlogPosts = ()=> {
             <Loader show={showLoader} />
             <Page
                 title="Latest Posts">
-                <div className="masonry-filter-container d-flex align-items-center">
-                    <span>Category:</span>
-                    <div className="masonry-filter-holder">
-                        <div className="masonry__filters" data-filter-all-text="All Categories"></div>
-                    </div>
-                </div>
-                <hr />
                 <Blog onPaginationClick={handlePagination} posts={posts} />
             </Page>
         </>

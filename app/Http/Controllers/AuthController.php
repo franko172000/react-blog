@@ -79,7 +79,7 @@ class AuthController extends Controller
             'email' => $data['email'],
             'password' => $data['password'],
             'firstName' => $data['firstName'],
-            'lastName' => $data['lastName']
+            'lastName' => $data['lastName'],
             ]));
         return $this->responseCreated("User created");
     }

@@ -19,6 +19,7 @@ class PostResource extends JsonResource
             'title' => $this->title,
             'description' => $this->description,
             'publicationDate' => $this->publication_date->format('F j, Y'),
+            'category' => $this?->category->name
         ];
     }
 }

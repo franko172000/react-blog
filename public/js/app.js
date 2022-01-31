@@ -5797,6 +5797,8 @@ var BlogCard = function BlogCard(_ref) {
           children: post.publicationDate
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("h5", {
           children: post.title
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("p", {
+          children: ["Category: ", post.category]
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("a", {
           href: "#",
           children: "Read More"
@@ -6952,23 +6954,12 @@ var BlogPosts = function BlogPosts() {
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_components_Loader__WEBPACK_IMPORTED_MODULE_3__["default"], {
       show: showLoader
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_components_Page__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_components_Page__WEBPACK_IMPORTED_MODULE_1__["default"], {
       title: "Latest Posts",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
-        className: "masonry-filter-container d-flex align-items-center",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("span", {
-          children: "Category:"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
-          className: "masonry-filter-holder",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
-            className: "masonry__filters",
-            "data-filter-all-text": "All Categories"
-          })
-        })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("hr", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_components_Blog__WEBPACK_IMPORTED_MODULE_4__["default"], {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_components_Blog__WEBPACK_IMPORTED_MODULE_4__["default"], {
         onPaginationClick: handlePagination,
         posts: posts
-      })]
+      })
     })]
   });
 };
@@ -7218,7 +7209,7 @@ var Register = function Register() {
     firstName: yup__WEBPACK_IMPORTED_MODULE_4__.string().required('first name is required'),
     lastName: yup__WEBPACK_IMPORTED_MODULE_4__.string().required('last name is required'),
     email: yup__WEBPACK_IMPORTED_MODULE_4__.string().required('email is required').email('email is invalid'),
-    password: yup__WEBPACK_IMPORTED_MODULE_4__.string().matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})", 'Password not valid')
+    password: yup__WEBPACK_IMPORTED_MODULE_4__.string()
   });
   var formOptions = {
     resolver: (0,_hookform_resolvers_yup__WEBPACK_IMPORTED_MODULE_3__.yupResolver)(formValidationSchema)
@@ -7725,7 +7716,7 @@ var NewPost = function NewPost() {
                   name: "title",
                   className: errors.title ? 'input-error' : ''
                 }, register('title')), {}, {
-                  placeholder: "First name"
+                  placeholder: "Post Title"
                 })), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("span", {
                   className: "text-danger",
                   children: (_errors$title = errors.title) === null || _errors$title === void 0 ? void 0 : _errors$title.message
@@ -7754,9 +7745,11 @@ var NewPost = function NewPost() {
                 className: "col-12",
                 children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("label", {
                   children: "Description"
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("textarea", _objectSpread({
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("textarea", _objectSpread(_objectSpread({
                   name: "description"
-                }, register('description'))), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("span", {
+                }, register('description')), {}, {
+                  placeholder: "Post description"
+                })), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("span", {
                   className: "text-danger",
                   children: (_errors$description = errors.description) === null || _errors$description === void 0 ? void 0 : _errors$description.message
                 })]

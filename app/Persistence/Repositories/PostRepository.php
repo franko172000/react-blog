@@ -72,6 +72,8 @@ class PostRepository
             $postObj = $postObj->oldestPosts();
         }
 
-        return $postObj->paginate($data->limit, ['*'], 'page', $data->page);
+        return $postObj
+            ->with('category')
+            ->paginate($data->limit, ['*'], 'page', $data->page);
     }
 }

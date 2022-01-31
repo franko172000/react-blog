@@ -58,7 +58,7 @@ const NewPost = ()=>{
                             <div className="row">
                                 <div className="col-12">
                                     <label>Post Title</label>
-                                    <input type="text" name="title" className={errors.title ? 'input-error' : ''} {...register('title')} placeholder="First name"/>
+                                    <input type="text" name="title" className={errors.title ? 'input-error' : ''} {...register('title')} placeholder="Post Title"/>
                                     <span className="text-danger">{errors.title?.message}</span>
                                 </div>
                                 <div className="col-12">
@@ -73,7 +73,7 @@ const NewPost = ()=>{
                                 </div>
                                 <div className="col-12">
                                     <label>Description</label>
-                                    <textarea name="description" {...register('description')}></textarea>
+                                    <textarea name="description" {...register('description')} placeholder="Post description"></textarea>
                                     <span className="text-danger">{errors.description?.message}</span>
                                 </div>
                                 <div className="col-12">

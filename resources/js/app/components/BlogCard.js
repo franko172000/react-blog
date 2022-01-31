@@ -5,6 +5,7 @@ const BlogCard = ({post})=> {
                 <div className="feature__body boxed boxed--border">
                     <span>{post.publicationDate}</span>
                     <h5>{post.title}</h5>
+                    <p>Category: {post.category}</p>
                     <a href="#">
                         Read More
                     </a>

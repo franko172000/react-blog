@@ -84,6 +84,20 @@ class PostControllerTest extends BaseTestCase
                 'Accept' => 'application/json'
             ]);
 
+        $response->assertJsonStructure([
+            'data' => [
+                [
+                    'id',
+                    'title',
+                    'description',
+                    'publicationDate',
+                    'category'
+                ]
+            ],
+            'links',
+            'meta'
+        ]);
+
         $data = json_decode($response->content(), true);
         $this->assertCount($defaultLimit, $data['data']);
         $this->assertArrayHasKey('meta', $data);

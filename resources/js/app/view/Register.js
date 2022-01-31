@@ -11,7 +11,7 @@ const Register = ()=>{
         firstName: Yup.string().required('first name is required'),
         lastName: Yup.string().required('last name is required'),
         email: Yup.string().required('email is required').email('email is invalid'),
-        password: Yup.string().matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})", 'Password not valid'),
+        password: Yup.string(),
     });
 
     const formOptions = { resolver: yupResolver(formValidationSchema)};
