@@ -30,7 +30,7 @@ class Post extends Model
 
     public function scopeOldestPosts($query)
     {
-        return $query->orderBy('publication_date', 'asc');
+        return $query->orderBy('publication_date');
     }
 
     public function user(): BelongsTo

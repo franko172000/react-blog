@@ -18,7 +18,7 @@ class PostFactory extends Factory
         return [
             'title' => $this->faker->sentence,
             'description' => $this->makeDescription(),
-            'publication_date' => now()
+            'publication_date' => now()->addDays(rand(1, 6))
         ];
     }
 
@@ -29,10 +29,9 @@ class PostFactory extends Factory
     private function makeDescription(): string
     {
         $text = "";
-        foreach ($this->faker->paragraphs(rand(5, 8)) as $paragraph){
+        foreach ($this->faker->paragraphs(rand(5, 8)) as $paragraph) {
             $text .= "<p> $paragraph </p>";
         }
         return $text;
     }
-
 }

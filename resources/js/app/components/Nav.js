@@ -15,9 +15,7 @@ const Nav = ()=> {
         e.preventDefault();
         const res = await logout();
         if(res.status === 200){
-            auth.isLoggedIn = false;
-            auth.user = null;
-            store.set(AUTH_STORAGE_KEY, auth);
+            store.set(AUTH_STORAGE_KEY, null);
             window.location = '/'
         }
     }
@@ -26,15 +24,15 @@ const Nav = ()=> {
             <nav id="menu1" className="bar bar--sm bar-1 hidden-xs ">
                 <div className="container">
                     <div className="row">
-                        <div className="col-lg-1 col-md-2 hidden-xs">
+                        <div className="col-lg-2 col-md-2 hidden-xs">
                             <div className="bar__module">
-                                <a href="index.html">
-                                    <img className="logo logo-dark" alt="logo" src="img/logo-dark.png"/>
-                                    <img className="logo logo-light" alt="logo" src="img/logo-light.png"/>
-                                </a>
+                                <Link to="/">
+                                    <img className="logo-dark" alt="logo" src="assets/img/logo-dark.png"/>
+                                    <img className="logo-light" alt="logo" src="assets/img/logo-dark.png"/>
+                                </Link>
                             </div>
                         </div>
-                        <div className="col-lg-11 col-md-12 text-right text-left-xs text-left-sm">
+                        <div className="col-lg-10 col-md-12 text-right text-left-xs text-left-sm">
                             <div className="bar__module">
                                 <ul className="menu-horizontal text-left">
                                     <li className="dropdown">

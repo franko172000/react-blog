@@ -17,7 +17,7 @@ class AdminUserSeeder extends Seeder
     public function run()
     {
         User::factory()
-            ->count(20)
+            ->count(1)
             ->create([
               'user_type' => 'admin'
             ]);

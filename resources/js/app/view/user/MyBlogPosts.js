@@ -17,12 +17,19 @@ const MyBlogPosts = ()=> {
         });
     }
 
+    const orderPosts = async (e)=>{
+        await getPosts({
+            sortOrder: e.target.value
+        });
+    }
+
     const getPosts = async (params) =>{
         setShowLoader(true);
         const res = await getUserPosts(params);
         setPosts(res.data);
         setShowLoader(false)
     }
+
     return (
         <>
             <Loader show={showLoader} />
@@ -34,9 +41,12 @@ const MyBlogPosts = ()=> {
             <Page
                 title="My Blog Posts">
                 <div className="masonry-filter-container d-flex align-items-center">
-                    <span>Category:</span>
-                    <div className="masonry-filter-holder">
-                        <div className="masonry__filters" data-filter-all-text="All Categories"></div>
+                    <span>Order by:</span>
+                    <div className="col-2">
+                        <select name="select" onChange={orderPosts}>
+                            <option value="new">Newer Posts</option>
+                            <option value="old">Older Posts</option>
+                        </select>
                     </div>
                 </div>
                 <hr />
